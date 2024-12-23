@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "It happened on Medium in 2024",
+  "author": "Medium Staff",
+  "url": "https://blog.medium.com/it-happened-on-medium-in-2024-6575a0e85406",
+  "likes": 7100
+}
