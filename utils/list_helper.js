@@ -26,6 +26,16 @@ const favoriteBlog = (blogs) => {
     })
 }
 
+// TODO E4.6
+// const mostBlogs = (blogs) => {
+
+// }
+
+// TODO E4.7
+// const mostLikes = (blogs) => {
+
+// }
+
 module.exports = {
   dummy, totalLikes, favoriteBlog
 }
