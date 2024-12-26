@@ -30,10 +30,31 @@ test('there are two blogs', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
-test.only('the unique identifier property of the blog posts is named id', async () => {
+test('the unique identifier property of the blog posts is named id', async () => {
   const response = await api.get('/api/blogs')
 
   assert(response.body[0].id)
+})
+
+test.only('a valid blog can be added', async () => {
+  const newBlog = {
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    likes: 10,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(blog => blog.title)
+  assert(titles.includes('First class tests'))
 })
 
 after(async () => {
