@@ -17,17 +17,23 @@ beforeEach(async () => {
   await Promise.all(promises)
 })
 
-test.only('blogs are returned as json', async () => {
+test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
 
-test.only('there are two blogs', async () => {
+test('there are two blogs', async () => {
   const response = await api.get('/api/blogs')
 
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
+})
+
+test.only('the unique identifier property of the blog posts is named id', async () => {
+  const response = await api.get('/api/blogs')
+
+  assert(response.body[0].id)
 })
 
 after(async () => {
