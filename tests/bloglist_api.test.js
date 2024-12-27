@@ -36,7 +36,7 @@ test('the unique identifier property of the blog posts is named id', async () =>
   assert(response.body[0].id)
 })
 
-test.only('a valid blog can be added', async () => {
+test('a valid blog can be added', async () => {
   const newBlog = {
     title: "First class tests",
     author: "Robert C. Martin",
@@ -55,6 +55,23 @@ test.only('a valid blog can be added', async () => {
 
   const titles = blogsAtEnd.map(blog => blog.title)
   assert(titles.includes('First class tests'))
+})
+
+test.only('the default value of the likes property is 0', async () => {
+  const newBlog = {
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  console.log('addedBlog:', response.body)
+  
+  assert.strictEqual(response.body.likes, 0)
 })
 
 after(async () => {
