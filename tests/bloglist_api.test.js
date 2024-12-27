@@ -74,7 +74,7 @@ test('the default value of the likes property is 0', async () => {
   assert.strictEqual(response.body.likes, 0)
 })
 
-test.only('the title property of a new blog is required', async () => {
+test('the title property of a new blog is required', async () => {
   const newBlog = {
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
@@ -87,7 +87,7 @@ test.only('the title property of a new blog is required', async () => {
     .expect(400)
 })
 
-test.only('the url property of a new blog is required', async () => {
+test('the url property of a new blog is required', async () => {
   const newBlog = {
     title: "First class tests",
     author: "Robert C. Martin",
@@ -98,6 +98,21 @@ test.only('the url property of a new blog is required', async () => {
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+})
+
+test('a blog can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+  const titles = blogsAtEnd.map(blog => blog.title)
+  assert(!titles.includes(blogToDelete.title))
 })
 
 after(async () => {
