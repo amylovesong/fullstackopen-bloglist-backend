@@ -69,7 +69,6 @@ test('the default value of the likes property is 0', async () => {
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
-  console.log('addedBlog:', response.body)
   
   assert.strictEqual(response.body.likes, 0)
 })
@@ -113,6 +112,29 @@ test('a blog can be deleted', async () => {
 
   const titles = blogsAtEnd.map(blog => blog.title)
   assert(!titles.includes(blogToDelete.title))
+})
+
+test('a blog can be updated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  const blog = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+    likes: 6,
+  }
+
+  const response = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(blog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  
+  assert.strictEqual(response.body.likes, blog.likes)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
 after(async () => {
