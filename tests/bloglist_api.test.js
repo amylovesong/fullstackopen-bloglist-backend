@@ -57,7 +57,7 @@ test('a valid blog can be added', async () => {
   assert(titles.includes('First class tests'))
 })
 
-test.only('the default value of the likes property is 0', async () => {
+test('the default value of the likes property is 0', async () => {
   const newBlog = {
     title: "First class tests",
     author: "Robert C. Martin",
@@ -72,6 +72,32 @@ test.only('the default value of the likes property is 0', async () => {
   console.log('addedBlog:', response.body)
   
   assert.strictEqual(response.body.likes, 0)
+})
+
+test.only('the title property of a new blog is required', async () => {
+  const newBlog = {
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    likes: 10,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test.only('the url property of a new blog is required', async () => {
+  const newBlog = {
+    title: "First class tests",
+    author: "Robert C. Martin",
+    likes: 10,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 after(async () => {
