@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFteWxvdmVzb25nIiwiaWQiOiI2Nzc5NGIxOWZjODExYWVhYTNkZWNkOTIiLCJpYXQiOjE3MzYwODkyNjR9.4dZiEL7JI2P1FiXtPM6r4JanXVcJI9wO_ccyjlhoIcY
 
 {
   "title": "It happened on Medium in 2024",
