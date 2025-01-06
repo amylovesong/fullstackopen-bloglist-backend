@@ -14,6 +14,7 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', middleware.userExtractor, async (request, response) => {
   logger.info('request.user:', request.user)
   const user = await User.findById(request.user.id)
+  logger.info('find user:', user)
 
   const blog = new Blog(request.body)
   blog.user = user.id
@@ -28,6 +29,7 @@ blogRouter.post('/', middleware.userExtractor, async (request, response) => {
 blogRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
   const id = request.params.id
   const blog = await Blog.findById(id)
+  logger.info('find blog:', blog)
   if (request.user.id !== blog.user.toString()) { // blog.user is not a string, but an object
     return response.status(401).json({ error: 'token invalid'})
   }

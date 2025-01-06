@@ -8,6 +8,7 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
+const testToken = process.env.TEST_TOKEN
 
 describe('when there are some blogs saved initially', () => {
   beforeEach(async () => {
@@ -35,6 +36,13 @@ describe('when there are some blogs saved initially', () => {
   })
   
   describe('addition of a new blog', () => {
+    const testData = {}
+    beforeEach(async () => {
+      await User.deleteMany({})
+      const token = await helper.insertOneUserAndGenerateToken()
+      testData.token = `Bearer ${token}`
+    })
+
     test('succeeds with valid data', async () => {
       const newBlog = {
         title: "First class tests",
@@ -45,6 +53,7 @@ describe('when there are some blogs saved initially', () => {
     
       await api
         .post('/api/blogs')
+        .set('Authorization', testData.token)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -65,6 +74,7 @@ describe('when there are some blogs saved initially', () => {
     
       const response = await api
         .post('/api/blogs')
+        .set('Authorization', testData.token)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -81,6 +91,7 @@ describe('when there are some blogs saved initially', () => {
     
       await api
         .post('/api/blogs')
+        .set('Authorization', testData.token)
         .send(newBlog)
         .expect(400)
     })
@@ -94,8 +105,24 @@ describe('when there are some blogs saved initially', () => {
     
       await api
         .post('/api/blogs')
+        .set('Authorization', testData.token)
         .send(newBlog)
         .expect(400)
+    })
+
+    test('fails with status code 401 if token is not provided', async () => {
+      const newBlog = {
+        title: "First class tests",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+        likes: 10,
+      }
+    
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
     })
   })
 
@@ -106,6 +133,7 @@ describe('when there are some blogs saved initially', () => {
     
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', testToken)
         .expect(204)
     
       const blogsAtEnd = await helper.blogsInDb()
