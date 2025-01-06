@@ -30,7 +30,16 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
+  const userToken = jwt.verify(request.token, config.SECRET)
+  if (!userToken.id) {
+    return response.status(401).json({ error: 'token invalid'})
+  }
+
   const id = request.params.id
+  const blog = await Blog.findById(id)
+  if (userToken.id !== blog.user.toString()) { // blog.user is not a string, but an object
+    return response.status(401).json({ error: 'token invalid'})
+  }
 
   await Blog.findByIdAndDelete(id)
   response.status(204).end()
