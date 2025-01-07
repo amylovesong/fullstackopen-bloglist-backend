@@ -51,11 +51,29 @@ const mostBlogs = (blogs) => {
   return result
 }
 
-// TODO E4.7
-// const mostLikes = (blogs) => {
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
 
-// }
+  const groupResult = _.groupBy(blogs, 'author')
+  logger.info('groupResult:', groupResult)
+  const mapResult = _.mapValues(groupResult, (value) => _.sumBy(value, 'likes'))
+  logger.info('mapResult:', mapResult)
+  
+  const result = _.maxBy(
+    _.map(_.toPairs(mapResult), p => {
+      return {
+        author: p[0],
+        likes: p[1]
+      }
+    }),
+    'likes'
+  )
+  logger.info('result:', result)
+  return result
+}
 
 module.exports = {
-  dummy, totalLikes, favoriteBlog, mostBlogs
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
