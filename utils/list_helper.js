@@ -1,3 +1,6 @@
+const _ = require('lodash')
+const logger = require('../utils/logger')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -26,10 +29,27 @@ const favoriteBlog = (blogs) => {
     })
 }
 
-// TODO E4.6
-// const mostBlogs = (blogs) => {
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+  
+  const countedResult = _.countBy(blogs, 'author')
+  logger.info('countedResult:', countedResult)
+  const pairs = _.toPairs(countedResult)
+  logger.info('pairs:', pairs)
+  const mapResult = _.map(pairs, p => {
+    return {
+      author: p[0],
+      blogs: p[1]
+    }
+  })
+  logger.info('mapResult:', mapResult)
 
-// }
+  const result = _.maxBy(mapResult, 'blogs')
+  logger.info('result:', result)
+  return result
+}
 
 // TODO E4.7
 // const mostLikes = (blogs) => {
@@ -37,5 +57,5 @@ const favoriteBlog = (blogs) => {
 // }
 
 module.exports = {
-  dummy, totalLikes, favoriteBlog
+  dummy, totalLikes, favoriteBlog, mostBlogs
 }
