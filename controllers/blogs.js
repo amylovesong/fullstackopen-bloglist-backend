@@ -62,4 +62,25 @@ blogRouter.put('/:id', async (request, response) => {
   response.json(blogToResponse)
 })
 
+blogRouter.put('/:id/comments', async (request, response) => {
+  const body = request.body
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+  logger.info('put request.body:', body, ' blog:', blog)
+  const comments = blog.comments ? blog.comments : []
+  const newBlog = {
+    ...blog._doc,
+    comments: comments.concat(body.comment)
+  }
+  logger.info('put newBlog:', newBlog)
+
+  const options = { new: true, runValidators: true, context: 'query' }
+  const updatedBlog = await Blog.findByIdAndUpdate(id, newBlog, options)
+  // replace user id with user info for response
+  const blogToResponse = await Blog.findById(updatedBlog.id)
+    .populate('user', { username: 1, name: 1 })
+  
+  response.json(blogToResponse)
+})
+
 module.exports = blogRouter
